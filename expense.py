@@ -109,7 +109,7 @@ with st.form("add_expense"):
     if st.form_submit_button("Add Expense"):
         add_expense(date, category, description, amount)
         st.success("✅ Expense added.")
-        st.experimental_rerun()
+        st.rerun()
 
 # Delete Expense
 st.markdown("### ❌ Delete Expense")
@@ -120,38 +120,32 @@ if not df.empty:
     if st.button("Delete Selected Expense"):
         delete_expense(selected_expense)
         st.success("🗑️ Expense deleted.")
-        st.experimental_rerun()
+        st.rerun()
 
 # Budget Management
 st.markdown("---")
 st.header("📅 Manage Budgets")
 col1, col2, col3 = st.columns(3)
 with col1:
-    month = st.selectbox("Month", [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ], key="add_month")
+    month = st.selectbox("Month", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
 with col2:
-    year = st.selectbox("Year", list(range(2022, datetime.today().year + 2)), index=1, key="add_year")
+    year = st.selectbox("Year", list(range(2022, datetime.today().year + 2)), index=1)
 with col3:
-    budget = st.number_input("Budget (₹)", min_value=0.0, format="%.2f", key="add_budget")
+    budget = st.number_input("Budget (₹)", min_value=0.0, format="%.2f")
 if st.button("💾 Add/Update Budget"):
     add_or_update_budget(month, year, budget)
     st.success("✅ Budget saved.")
-    st.experimental_rerun()
+    st.rerun()
 
 # Delete Budget
-st.subheader("🗑️ Delete a Budget Entry")
-budget_df = load_budgets()  # Refresh latest
 if not budget_df.empty:
+    st.subheader("🗑️ Delete a Budget Entry")
     budget_df["Label"] = budget_df.apply(lambda row: f"{row['month'].capitalize()} {row['year']} - ₹{row['budget']}", axis=1)
     selected_budget = st.selectbox("Select Budget to Delete", budget_df["Label"].tolist())
     if st.button("Delete Selected Budget"):
         delete_budget(selected_budget)
         st.warning("🗑️ Budget deleted.")
-        st.experimental_rerun()
-else:
-    st.info("No budget entries available to delete.")
+        st.rerun()
 
 # Daily View
 st.markdown("---")
